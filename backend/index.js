@@ -4,7 +4,7 @@ const path = require('path');
 
 const router = require('./router');
 
-const PORT = 5000;
+const PORT = process.env.PORT || 5000;
 const app = express();
 
 mongoose.connect('mongodb://localhost:27017/omni', {
@@ -14,11 +14,14 @@ mongoose.connect('mongodb://localhost:27017/omni', {
 
 app.use('/api', router);
 
-// following code is for running frontend and backend on same port for prod
-/*
- *let staticServe = express.static(path.join(__dirname, '../frontend/build'));
- *app.use("/", staticServe);
- *app.use("*", staticServe);
- */
+let startMessage = `Omni API running on port ${PORT}`;
 
-app.listen(PORT, () => console.log(`Omni API running on port ${PORT}`));
+// following code is for running frontend and backend on same port for prod
+if (process.env.DEPLOY === 'prod') {
+  let staticServe = express.static(path.join(__dirname, '../frontend/build'));
+  app.use("/", staticServe);
+  app.use("*", staticServe);
+  startMessage = `Omni web app running on port ${PORT}`;
+}
+
+app.listen(PORT, () => console.log(startMessage));

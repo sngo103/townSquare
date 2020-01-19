@@ -11,7 +11,7 @@
 - [x] We are a Daedalus / Google Mentored group
 - [ ] We are a beginner group (only completed CSCI 12700)
 - [ ] We plan to attend the final event on 1/31 at Google (time TBD)
-- As attendance is highly important, if you checked the above box but only some members will be attending, please indicate the number here: ___
+- As attendance is highly important, if you checked the above box but only some members will be attending, please indicate the number here: 0
 
 # General Info
 ## Theme: Create a Passion Project - Make something you've always wanted to build!

@@ -22,6 +22,7 @@ $ yarn start
 ```
 
 Backend:
+Make sure you have MongoDB running, then run the following commands
 ```bash
 $ cd backend
 $ yarn start

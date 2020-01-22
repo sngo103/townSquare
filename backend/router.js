@@ -128,4 +128,20 @@ router.post('/create/organization', requireLogin, async (req, res) => {
   }
 });
 
+router.post('/create/event', requireLogin, async (req, res) => {
+  let { name, location, time, description, organization } = req.body;
+  if (!allExist(name, location, time, description, organization)) {
+    res.json({success:false, message:'Missing at least one field!'});
+  } else {
+    let org = await Organization.findOne({name:organization});
+    if (!org) {
+      res.json({success:false, message:'That organization does not exist!'})
+    } else {
+      let e = Event({ name, location, time, description, organization:org });
+      await e.save();
+      res.json({success:true, message:'Successfully created event.'});
+    }
+  }
+});
+
 module.exports = router;

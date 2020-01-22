@@ -112,6 +112,29 @@ router.post('/subscribe', requireLogin, async (req, res) => {
   }
 });
 
+router.post('/unsubscribe', requireLogin, async (req, res) => {
+  let orgName = req.body.name;
+  if (!orgName) {
+    res.json({success:false, message:'No organization specified.'});
+  } else {
+    let org = await Organization.findOne({name:orgName});
+    if (!org) {
+      res.json({success:false,
+        message:'That organization does not exist.'});
+    } else {
+      if (!req.user.subscriptions.includes(org.id)) {
+        res.json({success:false,
+          message:'You are not subscribed to that organization.'});
+      } else {
+        let orgIndex = req.user.subscriptions.indexOf(org.id);
+        req.user.subscriptions.splice(orgIndex, 1);
+        await req.user.save();
+        res.json({success:true});
+      }
+    }
+  }
+});
+
 router.post('/create/organization', requireLogin, async (req, res) => {
   let { name, description } = req.body;
   if (!allExist(name, description)) {

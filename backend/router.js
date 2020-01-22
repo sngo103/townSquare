@@ -133,6 +133,7 @@ router.post('/create/event', requireLogin, async (req, res) => {
   if (!allExist(name, location, time, description, organization)) {
     res.json({success:false, message:'Missing at least one field!'});
   } else {
+    // TODO: validate club membership before creating event
     let org = await Organization.findOne({name:organization});
     if (!org) {
       res.json({success:false, message:'That organization does not exist!'})

@@ -95,20 +95,35 @@ router.post('/subscribe', requireLogin, async (req, res) => {
   if (!orgName) {
     res.json({success:false, message:'No organization specified.'});
   } else {
-    let orgNames = req.user.subscriptions.map(org => org.name);
-    if (orgNames.includes(orgName)) {
+    let org = await Organization.findOne({name:orgName});
+    if (!org) {
       res.json({success:false,
-        message:'You are already subscribed to that organization.'});
+        message:'That organization does not exist.'});
     } else {
-      let org = await Organization.findOne({name:orgName});
-      if (!org) {
+      if (req.user.subscriptions.includes(org.id)) {
         res.json({success:false,
-          message:'That organization does not exist.'});
+          message:'You are already subscribed to that organization.'});
       } else {
         req.user.subscriptions.push(org);
         await req.user.save();
         res.json({success:true});
       }
+    }
+  }
+});
+
+router.post('/create/organization', requireLogin, async (req, res) => {
+  let { name, description } = req.body;
+  if (!allExist(name, description)) {
+    res.json({success:false, message:'Missing name or description!'});
+  } else {
+    let existingOrg = await Organization.findOne({name});
+    if (existingOrg) {
+      res.json({success:false, message:'An organization with that name already exists!'});
+    } else {
+      let org = Organization({name:name, description:description});
+      await org.save();
+      res.json({success:true, message:'Successfully created organization.'});
     }
   }
 });

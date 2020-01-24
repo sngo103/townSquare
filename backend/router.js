@@ -99,6 +99,9 @@ router.post('/subscribe', requireLogin, async (req, res) => {
     if (!org) {
       res.json({success:false,
         message:'That organization does not exist.'});
+    } else if(!org.isPublic && !req.user.memberships.includes(org.id)) {
+      res.json({success:false,
+        message:'That organization is not public.'});
     } else {
       if (req.user.subscriptions.includes(org.id)) {
         res.json({success:false,
@@ -136,17 +139,91 @@ router.post('/unsubscribe', requireLogin, async (req, res) => {
 });
 
 router.post('/create/organization', requireLogin, async (req, res) => {
-  let { name, description } = req.body;
-  if (!allExist(name, description)) {
-    res.json({success:false, message:'Missing name or description!'});
+  let { name, description, isPublic } = req.body;
+  if (!allExist(name, description, isPublic)) {
+    res.json({success:false, message:'Missing at least one field!'});
   } else {
     let existingOrg = await Organization.findOne({name});
     if (existingOrg) {
       res.json({success:false, message:'An organization with that name already exists!'});
     } else {
-      let org = Organization({name:name, description:description});
+      let org = Organization({name, description, isPublic, creator:req.user});
       await org.save();
+      req.user.subscriptions.push(org);
+      req.user.memberships.push(org);
+      await req.user.save();
       res.json({success:true, message:'Successfully created organization.'});
+    }
+  }
+});
+
+router.post('/requestmembership', requireLogin, async (req, res) => {
+  let orgName = req.body.name;
+  if (!orgName) {
+    res.json({success:false, message:'No organization specified.'});
+  } else {
+    let org = await Organization.findOne({name:orgName});
+    if (!org) {
+      res.json({success:false,
+        message:'That organization does not exist.'});
+    } else if(req.user.memberships.includes(org.id)) {
+      res.json({success:false,
+        message:'You are already a member of that organization.'});
+    } else if(org.membershipRequests.includes(req.user.id)) {
+      res.json({success:false,
+        message:'You already requested membership for that organization.'});
+    } else {
+      org.membershipRequests.push(req.user);
+      await org.save();
+      res.json({success:true});
+    }
+  }
+});
+
+router.get('/membershiprequests/:orgName', requireLogin, async (req, res) => {
+  let orgName = req.params.orgName;
+  if (!orgName) {
+    res.json({success:false, message:'No organization specified.'});
+  } else {
+    let org = await Organization.findOne({name:orgName})
+      .populate('membershipRequests');
+    if (!org) {
+      res.json({success:false,
+        message:'That organization does not exist.'});
+    } else if(!org.creator.equals(req.user.id)) {
+      res.json({success:false,
+        message:'You are not the organization\'s creator'});
+    } else {
+      res.json({success:true,
+        members:org.membershipRequests.map(m => m.username)});
+    }
+  }
+});
+
+router.post('/approvemembership', requireLogin, async (req, res) => {
+  let { username, orgName } = req.body;
+  if (!allExist(username, orgName)) {
+    res.json({success:false, message:'Missing username or organization name.'});
+  } else {
+    let user = await User.findOne({username});
+    let org = await Organization.findOne({name: orgName});
+    if (!user) {
+      res.json({success:false, message:'That user does not exist.'});
+    } else if (!org) {
+      res.json({success:false, message:'That organization does not exist.'});
+    } else if (!org.creator.equals(req.user.id)) {
+      res.json({success:false,
+        message:'You are not the organization\'s creator.'});
+    } else if (!org.membershipRequests.includes(user.id)) {
+      res.json({success:false,
+        message:'That user did not request membership.'});
+    } else {
+      user.memberships.push(org);
+      await user.save();
+      let requestIndex = org.membershipRequests.indexOf(user.id);
+      org.membershipRequests.splice(requestIndex, 1);
+      await org.save();
+      res.json({success:true});
     }
   }
 });
@@ -156,10 +233,12 @@ router.post('/create/event', requireLogin, async (req, res) => {
   if (!allExist(name, location, time, description, organization)) {
     res.json({success:false, message:'Missing at least one field!'});
   } else {
-    // TODO: validate club membership before creating event
     let org = await Organization.findOne({name:organization});
     if (!org) {
       res.json({success:false, message:'That organization does not exist!'})
+    } else if (!req.user.memberships.includes(org.id)) {
+      res.json({success:false,
+        message:'You are not a member of this organization!'})
     } else {
       let e = Event({ name, location, time, description, organization:org });
       await e.save();

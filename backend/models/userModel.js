@@ -6,6 +6,7 @@ const userSchema = new mongoose.Schema({
   hashedPassword: String,
   location:       String,
   subscriptions:  [{ type: mongoose.Schema.Types.ObjectId, ref: 'Organization' }],
+  memberships:    [{ type: mongoose.Schema.Types.ObjectId, ref: 'Organization' }],
 });
 
 const userModel = new mongoose.model('User', userSchema);

@@ -1,5 +1,6 @@
-import React from 'react';
-import { Box, Grommet } from 'grommet';
+import React, { useState } from 'react';
+import { Grommet, Box, Button, Heading, Collapsible } from 'grommet';
+import { Notification } from 'grommet-icons';
 import Homepage from "./components/Homepage.js";
 import Welcome from "./components/Welcome.js";
 
@@ -31,13 +32,38 @@ const theme = {
 };
 
 function App() {
+    const [showSidebar, setShowSidebar] = useState(false);
+
   return (
-    <Grommet theme={theme}>
-      <header>
+    <Grommet theme={theme} full>
+      <Box fill>
       <title> Town Square </title>
       <Welcome />
-      <AppBar> Hello World! </AppBar>
-      </header>
+      <AppBar>
+      <Heading level='3' margin='none'>My App</Heading>
+      <Button
+            icon={<Notification />}
+            onClick={() => setShowSidebar(!showSidebar)}
+       />
+      </AppBar>
+      <Box direction='row' flex overflow={{ horizontal: 'hidden' }}>
+      <Box flex align='center' justify='center'>
+        app body
+      </Box>
+        <Collapsible direction="horizontal" open={showSidebar}>
+            <Box
+              flex
+              width='medium'
+              background='light-2'
+              elevation='small'
+              align='center'
+              justify='center'
+            >
+              sidebar
+            </Box>
+        </Collapsible>
+    </Box>
+  </Box>
     </Grommet>
   );
 }

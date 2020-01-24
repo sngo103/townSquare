@@ -15,7 +15,7 @@ const AppBar = (props) => (
   style={{ zIndex: '1' }}
   {...props}
   />
-); 
+);
 
 const theme = {
   global: {

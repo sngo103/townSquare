@@ -157,6 +157,49 @@ router.post('/create/organization', requireLogin, async (req, res) => {
   }
 });
 
+router.post('/requestmembership', requireLogin, async (req, res) => {
+  let orgName = req.body.name;
+  if (!orgName) {
+    res.json({success:false, message:'No organization specified.'});
+  } else {
+    let org = await Organization.findOne({name:orgName});
+    if (!org) {
+      res.json({success:false,
+        message:'That organization does not exist.'});
+    } else if(req.user.memberships.includes(org.id)) {
+      res.json({success:false,
+        message:'You are already a member of that organization.'});
+    } else if(org.membershipRequests.includes(req.user.id)) {
+      res.json({success:false,
+        message:'You already requested membership for that organization.'});
+    } else {
+      org.membershipRequests.push(req.user);
+      await org.save();
+      res.json({success:true});
+    }
+  }
+});
+
+router.get('/membershiprequests/:orgName', requireLogin, async (req, res) => {
+  let orgName = req.params.orgName;
+  if (!orgName) {
+    res.json({success:false, message:'No organization specified.'});
+  } else {
+    let org = await Organization.findOne({name:orgName})
+      .populate('membershipRequests');
+    if (!org) {
+      res.json({success:false,
+        message:'That organization does not exist.'});
+    } else if(!org.creator.equals(req.user.id)) {
+      res.json({success:false,
+        message:'You are not the organization\'s creator'});
+    } else {
+      res.json({success:true,
+        members:org.membershipRequests.map(m => m.username)});
+    }
+  }
+});
+
 router.post('/create/event', requireLogin, async (req, res) => {
   let { name, location, time, description, organization } = req.body;
   if (!allExist(name, location, time, description, organization)) {

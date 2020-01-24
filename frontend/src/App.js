@@ -3,6 +3,7 @@ import { Grommet, Box, Button, Heading, Collapsible, ResponsiveContext, Layer } 
 import { Notification, FormClose } from 'grommet-icons';
 import Homepage from "./components/Homepage.js";
 import Welcome from "./components/Welcome.js";
+import Events from "./components/Events.js";
 
 const AppBar = (props) => (
   <Box
@@ -16,7 +17,7 @@ const AppBar = (props) => (
   style={{ zIndex: '1' }}
   {...props}
   />
-);
+); 
 
 const theme = {
   global: {

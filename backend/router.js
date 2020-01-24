@@ -14,6 +14,7 @@ router.use(expressSession({resave: false,
   secret: 'super secret security'}));
 
 router.get('/', (req, res) => {
+  console.log("Homepage")
   res.json('Omni API');
 });
 

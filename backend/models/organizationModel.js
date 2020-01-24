@@ -4,6 +4,8 @@ const organizationSchema = new mongoose.Schema({
   name:        String,
   description: String,
   imageURL:    String,
+  creator:     { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
+  isPublic:    Boolean,
 });
 
 const organizationModel = new mongoose.model('Organization', organizationSchema);

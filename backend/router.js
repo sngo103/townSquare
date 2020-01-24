@@ -99,6 +99,9 @@ router.post('/subscribe', requireLogin, async (req, res) => {
     if (!org) {
       res.json({success:false,
         message:'That organization does not exist.'});
+    } else if(!org.isPublic && !req.user.memberships.includes(org.id)) {
+      res.json({success:false,
+        message:'That organization is not public.'});
     } else {
       if (req.user.subscriptions.includes(org.id)) {
         res.json({success:false,
@@ -136,16 +139,19 @@ router.post('/unsubscribe', requireLogin, async (req, res) => {
 });
 
 router.post('/create/organization', requireLogin, async (req, res) => {
-  let { name, description } = req.body;
-  if (!allExist(name, description)) {
-    res.json({success:false, message:'Missing name or description!'});
+  let { name, description, isPublic } = req.body;
+  if (!allExist(name, description, isPublic)) {
+    res.json({success:false, message:'Missing at least one field!'});
   } else {
     let existingOrg = await Organization.findOne({name});
     if (existingOrg) {
       res.json({success:false, message:'An organization with that name already exists!'});
     } else {
-      let org = Organization({name:name, description:description});
+      let org = Organization({name, description, isPublic, creator:req.user});
       await org.save();
+      req.user.subscriptions.push(org);
+      req.user.memberships.push(org);
+      await req.user.save();
       res.json({success:true, message:'Successfully created organization.'});
     }
   }
@@ -156,10 +162,12 @@ router.post('/create/event', requireLogin, async (req, res) => {
   if (!allExist(name, location, time, description, organization)) {
     res.json({success:false, message:'Missing at least one field!'});
   } else {
-    // TODO: validate club membership before creating event
     let org = await Organization.findOne({name:organization});
     if (!org) {
       res.json({success:false, message:'That organization does not exist!'})
+    } else if (!req.user.memberships.includes(org.id)) {
+      res.json({success:false,
+        message:'You are not a member of this organization!'})
     } else {
       let e = Event({ name, location, time, description, organization:org });
       await e.save();

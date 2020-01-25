@@ -3,8 +3,9 @@ import { Grommet, Box, Button, Heading, Collapsible, ResponsiveContext, Layer } 
 import { Notification, FormClose } from 'grommet-icons';
 //import Welcome from "./components/Welcome.js";
 //import Events from "./components/Events.js";
+import Events from "./Events.js";
 
-const AppBar = (props) => (
+const AppBar = (props) => (//import Events from "./components/Events.js";
   <Box
   tag='header'
   direction='row'
@@ -32,62 +33,37 @@ const theme = {
 };
 
 function Homepage() {
-  const [showSidebar, setShowSidebar] = useState(false);
+  const [showLayer, setShowLayer] = React.useState(true);
 
   return (
     <Grommet theme={theme} full>
     <ResponsiveContext.Consumer>
     {size => (
-      <Box fill>
+      <Box fill align="center" justify="center">
       <title> Town Square </title>
-      <AppBar>
-      <Button
-      icon={<Notification />}
-      onClick={() => setShowSidebar(!showSidebar)}
-      />
-      </AppBar>
       <Box direction='row' flex overflow={{ horizontal: 'hidden' }}>
-      {(!showSidebar || size !== 'small') ? (
-        <Collapsible direction="horizontal" open={showSidebar}>
-        <Box
-        flex
-        width='medium'
-        background='light-2'
-        elevation='small'
-        align='center'
-        justify='center'
-        >
-        sidebar
-        </Box>
-        </Collapsible>
-      ): (
-        <Layer>
-        <Box
-        background='light-2'
-        tag='header'
-        justify='end'
-        align='center'
-        direction='row'
-        >
-        <Button
-        icon={<FormClose />}
-        onClick={() => setShowSidebar(false)}
-        />
-        </Box>
-        <Box
-        fill
-        background='light-2'
-        align='center'
-        justify='center'
-        >
-        sidebar
-        </Box>
-        </Layer>
-      )}
-      <Box flex align='center' justify='center'>
-      app body
+        <Events />
+        {showLayer && (
+          <Layer full animation="fadeIn">
+            <Box fill background={{
+              color: "accent-2",
+              image: "url(https://cdn.hipwallpaper.com/i/50/88/0wlyaU.jpg)"
+              }} align="center" justify="center">
+              <Box pad="small" background={{ color: "brand" }} elevation="large">
+                  town square
+              </Box>
+              <br/><br/>
+              <Button
+                primary
+                color="#B02E52"
+                label="What's Goin' On?"
+                onClick={() => setShowLayer(false)}
+              />
+            </Box>
+          </Layer>
+        )}
       </Box>
-      </Box>
+
       </Box>
     )}
     </ResponsiveContext.Consumer>

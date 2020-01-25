@@ -1,7 +1,7 @@
 import React, { Component, useState } from 'react';
 import { grommet } from "grommet/themes";
 import { Grommet, Box, Button, Heading, Collapsible, ResponsiveContext, Layer, Accordion, AccordionPanel, Text, ThemeContext } from 'grommet';
-import { Notification, FormClose, Bookmark, CircleInformation, FormSubtract, FormAdd, User, Vmware, Gamepad } from 'grommet-icons';
+import { Notification, FormClose, Bookmark, CircleInformation, FormSubtract, FormAdd, User } from 'grommet-icons';
 
 const AppBar = (props) => (
   <Box
@@ -101,7 +101,7 @@ const loading = (
   </Box>
 );
 
-function Events() {
+function EventsTest() {
   const [showSidebar, setShowSidebar] = useState(false);
   const [highlightLoaded, setHighlightLoaded] = React.useState(false);
 
@@ -114,27 +114,26 @@ function Events() {
         <title> Town Square </title>
         <AppBar>
         <Button
-        icon={<Vmware />}
+        icon={<Notification />}
         onClick={() => setShowSidebar(!showSidebar)}
         />
-        <Box width='medium' color="#454353" background="#eb4034" elevation='xlarge' align='center' justify='center'>
-          town square
-        </Box>
         </AppBar>
         <Box direction='row' flex overflow={{ horizontal: 'hidden' }}>
           <Box
-          width='small'
-          background='#f0b1ad'
+          flex
+          width='medium'
+          background='light-2'
           elevation='small'
           align='center'
           justify='center'
           >
           sidebar
-        </Box>
-        <Box fill align='center' justify='center'>
-        <Box fill direction="row">
+          </Box>
+
+        <Box flex align='center' justify='center'>
+        <Box flex direction="row">
           <ThemeContext.Extend value={richAccordionTheme}>
-            <Accordion fill
+            <Accordion
               multiple
               onActive={activeIndexes => {
                 if (activeIndexes.includes(1)) {
@@ -143,11 +142,11 @@ function Events() {
                 }
               }}
             >
-              <RichPanel icon={<Gamepad />} label="Channel Details">
+              <RichPanel icon={<CircleInformation />} label="Channel Details">
                 <Box
                   pad={{
                     bottom: "medium",
-                    horizontal: "xlarge",
+                    horizontal: "small",
                     top: "small"
                   }}
                   gap="medium"
@@ -169,8 +168,62 @@ function Events() {
                   </Box>
                 </Box>
               </RichPanel>
-
-
+              <RichPanel
+                icon={<Bookmark color="accent-1" />}
+                label="Highlights"
+              >
+                {highlightLoaded ? (
+                  <Box
+                    pad={{
+                      bottom: "medium",
+                      horizontal: "small",
+                      top: "small"
+                    }}
+                    gap="medium"
+                    overflow="auto"
+                    style={{ maxHeight: "400px" }}
+                  >
+                    <Text color="dark-3">
+                      Below is the top message in
+                      <strong>#announcements</strong>.
+                    </Text>
+                    <Text>
+                      Lorem ipsum dolor sit amet, consectetur adipiscing elit,
+                      sed do eiusmod tempor incididunt ut labore et dolore magna
+                    </Text>
+                    <Text>
+                      Lorem ipsum dolor sit amet, consectetur adipiscing elit,
+                      sed do eiusmod tempor incididunt ut labore et dolore magna
+                    </Text>
+                    <Text>
+                      Lorem ipsum dolor sit amet, consectetur adipiscing elit,
+                      sed do eiusmod tempor incididunt ut labore et dolore magna
+                    </Text>
+                    <Text>
+                      Lorem ipsum dolor sit amet, consectetur adipiscing elit,
+                      sed do eiusmod tempor incididunt ut labore et dolore magna
+                    </Text>
+                    <Text>
+                      Lorem ipsum dolor sit amet, consectetur adipiscing elit,
+                      sed do eiusmod tempor incididunt ut labore et dolore magna
+                    </Text>
+                  </Box>
+                ) : (
+                  loading
+                )}
+              </RichPanel>
+              <RichPanel icon={<User color="accent-2" />} label="2,000 members">
+                <Box
+                  pad={{
+                    bottom: "medium",
+                    horizontal: "xlarge",
+                    top: "small"
+                  }}
+                  gap="medium"
+                >
+                  Yeah believe me, this channel has 2,000 members.
+                </Box>
+              </RichPanel>
             </Accordion>
           </ThemeContext.Extend>
 
@@ -184,4 +237,4 @@ function Events() {
     );
 }
 
-export default Events;
+export default EventsTest;

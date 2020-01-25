@@ -1,7 +1,7 @@
 import React, { Component, useState } from 'react';
 import { grommet } from "grommet/themes";
 import { Grommet, Box, Button, Heading, Collapsible, ResponsiveContext, Layer, Accordion, AccordionPanel, Text, ThemeContext } from 'grommet';
-import { Notification, FormClose, Bookmark, CircleInformation, FormSubtract, FormAdd, User, Vmware, Gamepad } from 'grommet-icons';
+import { Notification, FormClose, Bookmark, CircleInformation, FormSubtract, FormAdd, User, Vmware, Gamepad, Group, Html5, Linkedin, Instagram } from 'grommet-icons';
 
 const AppBar = (props) => (
   <Box
@@ -143,7 +143,7 @@ function Events() {
                 }
               }}
             >
-              <RichPanel icon={<Gamepad />} label="Channel Details">
+              <RichPanel icon={<Gamepad />} label="Gaming Club Interest Meeting">
                 <Box
                   pad={{
                     bottom: "medium",
@@ -169,8 +169,110 @@ function Events() {
                   </Box>
                 </Box>
               </RichPanel>
-
-
+              <RichPanel icon={<Group />} label="LGBTQ+ Support Group">
+                <Box
+                  pad={{
+                    bottom: "medium",
+                    horizontal: "xlarge",
+                    top: "small"
+                  }}
+                  gap="medium"
+                >
+                  <Box gap="xsmall">
+                    <Text color="dark-3">
+                      <strong>Purpose</strong>
+                    </Text>
+                    <Text>
+                      Used for general announcements like new releases,
+                      trainings...
+                    </Text>
+                  </Box>
+                  <Box gap="xsmall">
+                    <Text color="dark-3">
+                      <strong>Created</strong>
+                    </Text>
+                    <Text>Created by Bryan Jacquot on January 19, 2016</Text>
+                  </Box>
+                </Box>
+              </RichPanel>
+              <RichPanel icon={<Html5 />} label="Learn HTML5 Workshop">
+                <Box
+                  pad={{
+                    bottom: "medium",
+                    horizontal: "xlarge",
+                    top: "small"
+                  }}
+                  gap="medium"
+                >
+                  <Box gap="xsmall">
+                    <Text color="dark-3">
+                      <strong>Purpose</strong>
+                    </Text>
+                    <Text>
+                      Used for general announcements like new releases,
+                      trainings...
+                    </Text>
+                  </Box>
+                  <Box gap="xsmall">
+                    <Text color="dark-3">
+                      <strong>Created</strong>
+                    </Text>
+                    <Text>Created by Bryan Jacquot on January 19, 2016</Text>
+                  </Box>
+                </Box>
+              </RichPanel>
+              <RichPanel icon={<Instagram />} label="Sets for the 'gram">
+                <Box
+                  pad={{
+                    bottom: "medium",
+                    horizontal: "xlarge",
+                    top: "small"
+                  }}
+                  gap="medium"
+                >
+                  <Box gap="xsmall">
+                    <Text color="dark-3">
+                      <strong>Purpose</strong>
+                    </Text>
+                    <Text>
+                      Used for general announcements like new releases,
+                      trainings...
+                    </Text>
+                  </Box>
+                  <Box gap="xsmall">
+                    <Text color="dark-3">
+                      <strong>Created</strong>
+                    </Text>
+                    <Text>Created by Bryan Jacquot on January 19, 2016</Text>
+                  </Box>
+                </Box>
+              </RichPanel>
+              <RichPanel icon={<Linkedin />} label="How to have a Successful LinkedIn">
+                <Box
+                  pad={{
+                    bottom: "medium",
+                    horizontal: "xlarge",
+                    top: "small"
+                  }}
+                  gap="medium"
+                >
+                  <Box gap="xsmall">
+                    <Text color="dark-3">
+                      <strong>Purpose</strong>
+                    </Text>
+                    <Text>
+                      Used for general announcements like new releases,
+                      trainings...
+                    </Text>
+                  </Box>
+                  <Box gap="xsmall">
+                    <Text color="dark-3">
+                      <strong>Created</strong>
+                    </Text>
+                    <Text>Created by Bryan Jacquot on January 19, 2016</Text>
+                  </Box>
+                </Box>
+              </RichPanel>
             </Accordion>
           </ThemeContext.Extend>
 

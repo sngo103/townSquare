@@ -1,7 +1,7 @@
 import React, { Component, useState } from 'react';
 import { grommet } from "grommet/themes";
-import { Grommet, Box, Button, Heading, Collapsible, ResponsiveContext, Layer, Accordion, AccordionPanel, Text, ThemeContext } from 'grommet';
-import { Notification, FormClose, Bookmark, CircleInformation, FormSubtract, FormAdd, User, Vmware, Gamepad, Group, Html5, Linkedin, Instagram } from 'grommet-icons';
+import { Grommet, Box, Button, Heading, Collapsible, ResponsiveContext, Layer, Accordion, AccordionPanel, Text, ThemeContext, Select, TextInput } from 'grommet';
+import { Hide, View, Notification, FormClose, Bookmark, CircleInformation, FormSubtract, FormAdd, User, Vmware, Gamepad, Group, Html5, Linkedin, Instagram } from 'grommet-icons';
 
 const AppBar = (props) => (
   <Box
@@ -104,7 +104,12 @@ const loading = (
 function Events() {
   const [showSidebar, setShowSidebar] = useState(false);
   const [highlightLoaded, setHighlightLoaded] = React.useState(false);
-
+  const [open, setOpen] = React.useState();
+  const [value, setValue] = React.useState('');
+  const onOpen = () => setOpen(true);
+  const onClose = () => setOpen(undefined);
+  const [passValue, passSetValue] = React.useState("");
+  const [reveal, setReveal] = React.useState(false);
 
     return (
       <Grommet theme={theme} full>
@@ -129,7 +134,71 @@ function Events() {
           align='center'
           justify='center'
           >
-          sidebar
+      <Box fill background="light-2" align="center" justify="center">
+      <Text align="center" justify="center">
+        <strong>To see your saved events,</strong>
+      </Text>
+        <Button
+          label={
+            <Text>
+              <strong>Login</strong>
+            </Text>
+          }
+          onClick={onOpen}
+          plain
+        />
+      </Box>
+      {open && (
+        <Layer position="center" modal onClickOutside={onClose} onEsc={onClose}>
+          <Box pad="medium" gap="small" width="medium">
+            <Heading level={3} margin="none">
+              Login
+            </Heading>
+            <Text>email: <TextInput
+            placeholder="email@townsquare.com"
+            onChange={event => setValue(event.target.value)}
+            /></Text>
+            <Text>password:
+            <Box
+            width="medium"
+            direction="row"
+            round="small"
+            border
+            >
+            <TextInput
+            plain
+            type={reveal ? "text" : "password"}
+            value={passValue}
+            onChange={event => passSetValue(event.target.value)}
+            />
+            <Button
+            icon={reveal ? <View size="medium" /> : <Hide size="medium" />}
+            onClick={() => setReveal(!reveal)}
+            />
+            </Box>
+            </Text>
+            <Box
+              as="footer"
+              gap="small"
+              direction="row"
+              align="center"
+              justify="end"
+              pad={{ top: "medium", bottom: "small" }}
+            >
+              <Button
+                label={
+                  <Text color="white">
+                    <strong>Login</strong>
+                  </Text>
+                }
+                onClick={onClose}
+                primary
+                color="status-critical"
+              />
+            </Box>
+          </Box>
+        </Layer>
+      )}
         </Box>
         <Box fill align='center' justify='center'>
         <Box fill direction="row">

@@ -179,7 +179,7 @@ function Events() {
         </AppBar>
         <Box direction='row' flex overflow={{ horizontal: 'hidden' }}>
           <Box
-          width='small'
+          width='medium'
           background='#f0b1ad'
           elevation='small'
           align='center'
@@ -187,19 +187,21 @@ function Events() {
           >
       <Box fill background="light-2" align="center" justify="center">
       <Text align="center" justify="center">
-        <strong>To see your saved events,</strong><br/>
+        <strong>To see your saved events,<br/>
         <Button
           label={
-              <strong>&nbsp; Login&nbsp;  </strong>
+              <strong>&nbsp;Login&nbsp;</strong>
           }
           onClick={onLoginOpen}
         />
-        <strong><br />OR<br />   <Button
+        <br /><br /> OR <br /><br />
+        <Button
             label={
-                <strong>&nbsp; Create an Account&nbsp;</strong>
+                <strong>&nbsp;Create an Account&nbsp;</strong>
             }
             onClick={onRegisterOpen}
-          /> to save your events today.</strong>
+          />
+          <br />to save your events today.</strong>
       </Text>
       </Box>
       {openLogin && !openRegister && (
@@ -257,7 +259,7 @@ function Events() {
         </Layer>
       )}
       {openRegister && !openLogin && (
-        <Layer position="center" modal onClickOutside={onLoginClose} onEsc={onLoginClose}>
+        <Layer position="center" modal onClickOutside={onRegisterClose} onEsc={onRegisterClose}>
           <Box pad="medium" gap="small" width="large">
             <Heading level={3} margin="none">
               Create an Account

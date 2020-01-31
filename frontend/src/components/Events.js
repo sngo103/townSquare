@@ -1,6 +1,6 @@
 import React, { Component, useState } from 'react';
 import { grommet } from "grommet/themes";
-import { Grommet, Box, Button, Heading, Collapsible, ResponsiveContext, Layer, Accordion, AccordionPanel, Text, ThemeContext, Select, TextInput } from 'grommet';
+import { Grommet, Box, Button, Heading, Collapsible, ResponsiveContext, Form, FormField, Layer, Accordion, AccordionPanel, Text, ThemeContext, Select, TextInput } from 'grommet';
 import { Hide, View, Notification, FormClose, Bookmark, CircleInformation, FormSubtract, FormAdd, User, Vmware, Gamepad, Group, Html5, Linkedin, Instagram } from 'grommet-icons';
 import EventsList from './EventsList.js'
 
@@ -27,6 +27,19 @@ const theme = {
       family: 'Muli',
       size: '50px',
       height: '50px',
+    },
+  },
+};
+
+const formtheme = {
+  global: {
+    colors: {
+      brand: '#cf4658',
+    },
+    font: {
+      family: 'Muli',
+      size: '12px',
+      height: '12px',
     },
   },
 };
@@ -105,15 +118,18 @@ const loading = (
 function Events() {
   const [showSidebar, setShowSidebar] = useState(false);
   const [highlightLoaded, setHighlightLoaded] = React.useState(false);
-  const [open, setOpen] = React.useState();
+  const [openLogin, setOpenLogin] = React.useState();
+  const [openRegister, setOpenRegister] = React.useState();
   const [value, setValue] = React.useState('');
-  const onOpen = () => setOpen(true);
-  const onClose = () => setOpen(undefined);
+  const onLoginOpen = () => setOpenLogin(true);
+  const onLoginClose = () => setOpenLogin(undefined);
+  const onRegisterOpen = () => setOpenRegister(true);
+  const onRegisterClose = () => setOpenRegister(undefined);
   const [passValue, passSetValue] = React.useState("");
   const [reveal, setReveal] = React.useState(false);
 
     return (
-      <Grommet theme={theme} full>
+      <Grommet theme={formtheme} full>
       <ResponsiveContext.Consumer>
       {size => (
         <Box fill>
@@ -137,20 +153,23 @@ function Events() {
           >
       <Box fill background="light-2" align="center" justify="center">
       <Text align="center" justify="center">
-        <strong>To see your saved events,</strong>
-      </Text>
+        <strong>To see your saved events,</strong><br/>
         <Button
           label={
-            <Text>
-              <strong>Login</strong>
-            </Text>
+              <strong>&nbsp; Login&nbsp;  </strong>
           }
-          onClick={onOpen}
-          plain
+          onClick={onLoginOpen}
         />
+        <strong><br />OR<br />   <Button
+            label={
+                <strong>&nbsp; Create an Account&nbsp;</strong>
+            }
+            onClick={onRegisterOpen}
+          /> to save your events today.</strong>
+      </Text>
       </Box>
-      {open && (
-        <Layer position="center" modal onClickOutside={onClose} onEsc={onClose}>
+      {openLogin && !openRegister && (
+        <Layer position="center" modal onClickOutside={onLoginClose} onEsc={onLoginClose}>
           <Box pad="medium" gap="small" width="medium">
             <Heading level={3} margin="none">
               Login
@@ -192,7 +211,7 @@ function Events() {
                     <strong>Login</strong>
                   </Text>
                 }
-                onClick={onClose}
+                onClick={onLoginClose} // What happens when you click login after entering your info
                 primary
                 color="status-critical"
               />
@@ -200,13 +219,110 @@ function Events() {
           </Box>
         </Layer>
       )}
-        </Box>
+      {openRegister && !openLogin && (
+        <Layer position="center" modal onClickOutside={onLoginClose} onEsc={onLoginClose}>
+          <Box pad="medium" gap="small" width="large">
+            <Heading level={3} margin="none">
+              Create an Account
+            </Heading>
+            <Form
+          onReset={event => console.log(event)}
+          onSubmit={({ value, touched }) =>
+            console.log("Submit", value, touched)
+          }
+        >
+          <FormField
+            label="First Name"
+            name="firstname"
+            required
+            validate={[
+              { regexp: /^[a-z]/i },
+              name => {
+                if (name && name.length === 1) return "must be >1 character";
+                return undefined;
+              }
+            ]}
+          />
+          <FormField
+            label="Last Name"
+            name="lastname"
+            required
+            validate={[
+              { regexp: /^[a-z]/i },
+              name => {
+                if (name && name.length === 1) return "must be >1 character";
+                return undefined;
+              }
+            ]}
+          />
+          <FormField label="Email" name="email" type="email" required />
+          <Box
+          pad="small"
+          width="large"
+          direction="row"
+          round="small"
+          border
+          >
+          <Text> Password:&nbsp; </Text>
+          <TextInput
+          plain
+          type={reveal ? "text" : "password"}
+          value={passValue}
+          onChange={event => passSetValue(event.target.value)}
+          />
+          <Button
+          icon={reveal ? <View size="medium" /> : <Hide size="medium" />}
+          onClick={() => setReveal(!reveal)}
+          />
+          </Box>
+          <Box
+          pad="small"
+          width="large"
+          direction="row"
+          round="small"
+          border
+          >
+          <Text> Confirm Password:&nbsp; </Text>
+          <TextInput
+          plain
+          type={reveal ? "text" : "password"}
+          value={passValue}
+          onChange={event => passSetValue(event.target.value)}
+          />
+          <Button
+          icon={reveal ? <View size="medium" /> : <Hide size="medium" />}
+          onClick={() => setReveal(!reveal)}
+          />
+          </Box>
+        </Form>
+            <Box
+              as="footer"
+              gap="small"
+              direction="row"
+              align="center"
+              justify="end"
+              pad={{ top: "medium", bottom: "small" }}
+            >
+              <Button
+                label={
+                  <Text color="white">
+                    <strong>Register</strong>
+                  </Text>
+                }
+                onClick={onRegisterClose} // What happens when you click login after entering your info
+                primary
+                color="status-critical"
+              />
+            </Box>
+          </Box>
+        </Layer>
+      )}
+      </Box>
         <Box fill align='center' justify='center'>
         <Box fill direction="row">
           <ThemeContext.Extend value={richAccordionTheme}>
             <EventsList />
           </ThemeContext.Extend>
-
       </Box>
         </Box>
         </Box>

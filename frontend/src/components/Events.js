@@ -2,6 +2,7 @@ import React, { Component, useState } from 'react';
 import { grommet } from "grommet/themes";
 import { Grommet, Box, Button, Heading, Collapsible, ResponsiveContext, Layer, Accordion, AccordionPanel, Text, ThemeContext, Select, TextInput } from 'grommet';
 import { Hide, View, Notification, FormClose, Bookmark, CircleInformation, FormSubtract, FormAdd, User, Vmware, Gamepad, Group, Html5, Linkedin, Instagram } from 'grommet-icons';
+import EventsList from './EventsList.js'
 
 const AppBar = (props) => (
   <Box
@@ -203,146 +204,7 @@ function Events() {
         <Box fill align='center' justify='center'>
         <Box fill direction="row">
           <ThemeContext.Extend value={richAccordionTheme}>
-            <Accordion fill
-              multiple
-              onActive={activeIndexes => {
-                if (activeIndexes.includes(1)) {
-                  // give sometime to emulate an async call
-                  setTimeout(() => setHighlightLoaded(true), 1000);
-                }
-              }}
-            >
-              <RichPanel icon={<Gamepad />} label="Gaming Club Interest Meeting">
-                <Box
-                  pad={{
-                    bottom: "medium",
-                    horizontal: "xlarge",
-                    top: "small"
-                  }}
-                  gap="medium"
-                >
-                  <Box gap="xsmall">
-                    <Text color="dark-3">
-                      <strong>Purpose</strong>
-                    </Text>
-                    <Text>
-                      Used for general announcements like new releases,
-                      trainings...
-                    </Text>
-                  </Box>
-                  <Box gap="xsmall">
-                    <Text color="dark-3">
-                      <strong>Created</strong>
-                    </Text>
-                    <Text>Created by Bryan Jacquot on January 19, 2016</Text>
-                  </Box>
-                </Box>
-              </RichPanel>
-              <RichPanel icon={<Group />} label="LGBTQ+ Support Group">
-                <Box
-                  pad={{
-                    bottom: "medium",
-                    horizontal: "xlarge",
-                    top: "small"
-                  }}
-                  gap="medium"
-                >
-                  <Box gap="xsmall">
-                    <Text color="dark-3">
-                      <strong>Purpose</strong>
-                    </Text>
-                    <Text>
-                      Used for general announcements like new releases,
-                      trainings...
-                    </Text>
-                  </Box>
-                  <Box gap="xsmall">
-                    <Text color="dark-3">
-                      <strong>Created</strong>
-                    </Text>
-                    <Text>Created by Bryan Jacquot on January 19, 2016</Text>
-                  </Box>
-                </Box>
-              </RichPanel>
-              <RichPanel icon={<Html5 />} label="Learn HTML5 Workshop">
-                <Box
-                  pad={{
-                    bottom: "medium",
-                    horizontal: "xlarge",
-                    top: "small"
-                  }}
-                  gap="medium"
-                >
-                  <Box gap="xsmall">
-                    <Text color="dark-3">
-                      <strong>Purpose</strong>
-                    </Text>
-                    <Text>
-                      Used for general announcements like new releases,
-                      trainings...
-                    </Text>
-                  </Box>
-                  <Box gap="xsmall">
-                    <Text color="dark-3">
-                      <strong>Created</strong>
-                    </Text>
-                    <Text>Created by Bryan Jacquot on January 19, 2016</Text>
-                  </Box>
-                </Box>
-              </RichPanel>
-              <RichPanel icon={<Instagram />} label="Sets for the 'gram">
-                <Box
-                  pad={{
-                    bottom: "medium",
-                    horizontal: "xlarge",
-                    top: "small"
-                  }}
-                  gap="medium"
-                >
-                  <Box gap="xsmall">
-                    <Text color="dark-3">
-                      <strong>Purpose</strong>
-                    </Text>
-                    <Text>
-                      Used for general announcements like new releases,
-                      trainings...
-                    </Text>
-                  </Box>
-                  <Box gap="xsmall">
-                    <Text color="dark-3">
-                      <strong>Created</strong>
-                    </Text>
-                    <Text>Created by Bryan Jacquot on January 19, 2016</Text>
-                  </Box>
-                </Box>
-              </RichPanel>
-              <RichPanel icon={<Linkedin />} label="How to have a Successful LinkedIn">
-                <Box
-                  pad={{
-                    bottom: "medium",
-                    horizontal: "xlarge",
-                    top: "small"
-                  }}
-                  gap="medium"
-                >
-                  <Box gap="xsmall">
-                    <Text color="dark-3">
-                      <strong>Purpose</strong>
-                    </Text>
-                    <Text>
-                      Used for general announcements like new releases,
-                      trainings...
-                    </Text>
-                  </Box>
-                  <Box gap="xsmall">
-                    <Text color="dark-3">
-                      <strong>Created</strong>
-                    </Text>
-                    <Text>Created by Bryan Jacquot on January 19, 2016</Text>
-                  </Box>
-                </Box>
-              </RichPanel>
-            </Accordion>
+            <EventsList />
           </ThemeContext.Extend>
 
       </Box>

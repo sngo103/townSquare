@@ -120,18 +120,24 @@ function Events() {
   const [highlightLoaded, setHighlightLoaded] = React.useState(false);
   const [openLogin, setOpenLogin] = React.useState();
   const [openRegister, setOpenRegister] = React.useState();
-  const [value, setValue] = React.useState('');
-  const [loggingIn, setLoggingIn] = React.useState(false);
+  const [email, setEmail] = React.useState('');
+  const [fname, setFname] = React.useState('');
+  const [lname, setLname] = React.useState('');
+  const [passValue, passSetValue] = React.useState('');
+  const [confirmPassValue, confirmPassSetValue] = React.useState('');
+  const [revealPass, setRevealPass] = React.useState(false);
+  const [revealCPass, setRevealCPass] = React.useState(false);
+  const [loading, setLoading] = React.useState(false);
   const [errMsg, setErrMsg] = React.useState(undefined);
   const sendLogin = () => {
-    setLoggingIn(true);
+    setLoading(true);
     fetch('/api/login', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'
       },
       body: JSON.stringify({
-        username: value,
+        email: email,
         password: passValue
       })
     })
@@ -147,20 +153,47 @@ function Events() {
         //console.log(`Failed to login: ${err}`);
         setErrMsg('Failed to login.');
       })
-      .finally(() => setLoggingIn(false));
+      .finally(() => setLoading(false));
   };
   const onLoginOpen = () => setOpenLogin(true);
   const onLoginClose  = () => {
     setOpenLogin(undefined);
     setErrMsg(undefined);
   };
+  const sendRegister = () => {
+    setLoading(true);
+    fetch('/api/register', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        fname: fname,
+        lname: lname,
+        email: email,
+        password: passValue,
+        confirmPassword: confirmPassValue
+      })
+    })
+      .then(res => res.json())
+      .then(data => {
+        if (data.success) {
+          onRegisterClose();
+        } else {
+          setErrMsg(data.message);
+        }
+      })
+      .catch(err => {
+        //console.log(`Failed to register: ${err}`);
+        setErrMsg('Failed to register.');
+      })
+      .finally(() => setLoading(false));
+  };
   const onRegisterOpen = () => setOpenRegister(true);
   const onRegisterClose  = () => {
     setOpenRegister(undefined);
     setErrMsg(undefined);
   };
-  const [passValue, passSetValue] = React.useState("");
-  const [reveal, setReveal] = React.useState(false);
 
     return (
       <Grommet theme={formtheme} full>
@@ -211,8 +244,8 @@ function Events() {
             <Text color="status-critical">{ errMsg }</Text>
             <Text>email: <TextInput
             placeholder="email@townsquare.com"
-            value={value}
-            onChange={event => setValue(event.target.value)}
+            value={email}
+            onChange={event => setEmail(event.target.value)}
             /></Text>
             <Text>password:
             <Box
@@ -223,13 +256,13 @@ function Events() {
             >
             <TextInput
             plain
-            type={reveal ? "text" : "password"}
+            type={revealPass ? "text" : "password"}
             value={passValue}
             onChange={event => passSetValue(event.target.value)}
             />
             <Button
-            icon={reveal ? <View size="medium" /> : <Hide size="medium" />}
-            onClick={() => setReveal(!reveal)}
+            icon={revealPass ? <View size="medium" /> : <Hide size="medium" />}
+            onClick={() => setRevealPass(!revealPass)}
             />
             </Box>
             </Text>
@@ -247,7 +280,7 @@ function Events() {
                     <strong>Login</strong>
                   </Text>
                 }
-                disabled={loggingIn}
+                disabled={loading}
                 onClick={sendLogin}
                 primary
                 color="status-critical"
@@ -257,80 +290,71 @@ function Events() {
         </Layer>
       )}
       {openRegister && !openLogin && (
-        <Layer position="center" modal onClickOutside={onLoginClose} onEsc={onLoginClose}>
+        <Layer position="center" modal onClickOutside={onRegisterClose} onEsc={onRegisterClose}>
           <Box pad="medium" gap="small" width="large">
             <Heading level={3} margin="none">
               Create an Account
             </Heading>
+            <Text color="status-critical">{ errMsg }</Text>
             <Form
           onReset={event => console.log(event)}
           onSubmit={({ value, touched }) =>
             console.log("Submit", value, touched)
           }
         >
-          <FormField
-            label="First Name"
-            name="firstname"
-            required
-            validate={[
-              { regexp: /^[a-z]/i },
-              name => {
-                if (name && name.length === 1) return "must be >1 character";
-                return undefined;
-              }
-            ]}
-          />
-          <FormField
-            label="Last Name"
-            name="lastname"
-            required
-            validate={[
-              { regexp: /^[a-z]/i },
-              name => {
-                if (name && name.length === 1) return "must be >1 character";
-                return undefined;
-              }
-            ]}
-          />
-          <FormField label="Email" name="email" type="email" required />
+          <Text>First name: <TextInput
+          placeholder=""
+          value={fname}
+          onChange={event => setFname(event.target.value)}
+          /></Text>
+          <Text>Last name: <TextInput
+          placeholder=""
+          value={lname}
+          onChange={event => setLname(event.target.value)}
+          /></Text>
+          <Text>Email: <TextInput
+          placeholder=""
+          value={email}
+          onChange={event => setEmail(event.target.value)}
+          /></Text>
+          <Text>Password:
           <Box
-          pad="small"
-          width="large"
+          width="medium"
           direction="row"
           round="small"
           border
           >
-          <Text> Password:&nbsp; </Text>
           <TextInput
           plain
-          type={reveal ? "text" : "password"}
+          type={revealPass ? "text" : "password"}
           value={passValue}
           onChange={event => passSetValue(event.target.value)}
           />
           <Button
-          icon={reveal ? <View size="medium" /> : <Hide size="medium" />}
-          onClick={() => setReveal(!reveal)}
+          icon={revealPass ? <View size="medium" /> : <Hide size="medium" />}
+          onClick={() => setRevealPass(!revealPass)}
           />
           </Box>
+          </Text>
+          <Text>Confirm password:
           <Box
-          pad="small"
-          width="large"
+          width="medium"
           direction="row"
           round="small"
           border
           >
-          <Text> Confirm Password:&nbsp; </Text>
           <TextInput
           plain
-          type={reveal ? "text" : "password"}
-          value={passValue}
-          onChange={event => passSetValue(event.target.value)}
+          type={revealCPass ? "text" : "password"}
+          value={confirmPassValue}
+          onChange={event => confirmPassSetValue(event.target.value)}
           />
           <Button
-          icon={reveal ? <View size="medium" /> : <Hide size="medium" />}
-          onClick={() => setReveal(!reveal)}
+          icon={revealCPass ? <View size="medium" /> : <Hide size="medium" />}
+          onClick={() => setRevealCPass(!revealCPass)}
           />
           </Box>
+          </Text>
         </Form>
             <Box
               as="footer"
@@ -346,7 +370,8 @@ function Events() {
                     <strong>Register</strong>
                   </Text>
                 }
-                onClick={onRegisterClose} // What happens when you click login after entering your info
+                disabled={loading}
+                onClick={sendRegister}
                 primary
                 color="status-critical"
               />

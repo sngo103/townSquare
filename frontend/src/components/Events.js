@@ -172,6 +172,11 @@ function Events() {
     setOpenLogin(undefined);
     setErrMsg(undefined);
   };
+  const logout = () => {
+    fetch('/api/logout', {
+      method: 'POST'
+    }).then(() => setUserLoggedIn(false));
+  }
   const sendRegister = () => {
     setLoading(true);
     fetch('/api/register', {
@@ -243,7 +248,7 @@ function Events() {
             </Text>
           }
           disabled={loading}
-          onClick={() => setUserLoggedIn(false)}
+          onClick={logout}
           primary
           color="status-critical"
         />

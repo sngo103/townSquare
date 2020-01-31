@@ -2,8 +2,8 @@ const bcrypt = require('bcrypt');
 const User = require('./models/userModel');
 
 // get user object based on credentials
-async function getUser(username, password) {
-  let user = await User.findOne({username});
+async function getUser(email, password) {
+  let user = await User.findOne({email});
   if (user && bcrypt.compareSync(password, user.hashedPassword)) {
     return user;
   }
@@ -11,13 +11,13 @@ async function getUser(username, password) {
 }
 
 // try to register user and return whether it was successful or not
-async function registerUser(email, username, password) {
-  let existingUser = await User.findOne({$or: [{email}, {username}]});
+async function registerUser(fname, lname, email, password) {
+  let existingUser = await User.findOne({email});
   if (existingUser) {
     return false;
   } else {
     let hashedPassword = bcrypt.hashSync(password, 10);
-    let user = User({email, username, hashedPassword});
+    let user = User({fname, lname, email, hashedPassword});
     await user.save();
     return true;
   }

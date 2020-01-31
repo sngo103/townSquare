@@ -4,7 +4,6 @@ import { Notification, FormClose } from 'grommet-icons';
 import Homepage from "./components/Homepage.js";
 import Welcome from "./components/Welcome.js";
 import Events from "./components/Events.js";
-import EventsTest from "./components/EventsTest.js";
 import { BrowserRouter as Router, Route, Link } from "react-router-dom";
 
 class App extends Component {

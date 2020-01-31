@@ -1,7 +1,8 @@
 import React, { Component, useState } from 'react';
 import { grommet } from "grommet/themes";
-import { Grommet, Box, Button, Heading, Collapsible, ResponsiveContext, Layer, Accordion, AccordionPanel, Text, ThemeContext } from 'grommet';
-import { Notification, FormClose, Bookmark, CircleInformation, FormSubtract, FormAdd, User, Vmware, Gamepad, Group, Html5, Linkedin, Instagram } from 'grommet-icons';
+import { Grommet, Box, Button, Heading, Collapsible, ResponsiveContext, Form, FormField, Layer, Accordion, AccordionPanel, Text, ThemeContext, Select, TextInput } from 'grommet';
+import { Hide, View, Notification, FormClose, Bookmark, CircleInformation, FormSubtract, FormAdd, User, Vmware, Gamepad, Group, Html5, Linkedin, Instagram } from 'grommet-icons';
+import EventsList from './EventsList.js'
 
 const AppBar = (props) => (
   <Box
@@ -26,6 +27,19 @@ const theme = {
       family: 'Muli',
       size: '50px',
       height: '50px',
+    },
+  },
+};
+
+const formtheme = {
+  global: {
+    colors: {
+      brand: '#cf4658',
+    },
+    font: {
+      family: 'Muli',
+      size: '12px',
+      height: '12px',
     },
   },
 };
@@ -104,10 +118,85 @@ const loading = (
 function Events() {
   const [showSidebar, setShowSidebar] = useState(false);
   const [highlightLoaded, setHighlightLoaded] = React.useState(false);
-
+  const [openLogin, setOpenLogin] = React.useState();
+  const [openRegister, setOpenRegister] = React.useState();
+  const [email, setEmail] = React.useState('');
+  const [fname, setFname] = React.useState('');
+  const [lname, setLname] = React.useState('');
+  const [passValue, passSetValue] = React.useState('');
+  const [confirmPassValue, confirmPassSetValue] = React.useState('');
+  const [revealPass, setRevealPass] = React.useState(false);
+  const [revealCPass, setRevealCPass] = React.useState(false);
+  const [loading, setLoading] = React.useState(false);
+  const [errMsg, setErrMsg] = React.useState(undefined);
+  const sendLogin = () => {
+    setLoading(true);
+    fetch('/api/login', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        email: email,
+        password: passValue
+      })
+    })
+      .then(res => res.json())
+      .then(data => {
+        if (data.success) {
+          onLoginClose();
+        } else {
+          setErrMsg(data.message);
+        }
+      })
+      .catch(err => {
+        //console.log(`Failed to login: ${err}`);
+        setErrMsg('Failed to login.');
+      })
+      .finally(() => setLoading(false));
+  };
+  const onLoginOpen = () => setOpenLogin(true);
+  const onLoginClose  = () => {
+    setOpenLogin(undefined);
+    setErrMsg(undefined);
+  };
+  const sendRegister = () => {
+    setLoading(true);
+    fetch('/api/register', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        fname: fname,
+        lname: lname,
+        email: email,
+        password: passValue,
+        confirmPassword: confirmPassValue
+      })
+    })
+      .then(res => res.json())
+      .then(data => {
+        if (data.success) {
+          onRegisterClose();
+        } else {
+          setErrMsg(data.message);
+        }
+      })
+      .catch(err => {
+        //console.log(`Failed to register: ${err}`);
+        setErrMsg('Failed to register.');
+      })
+      .finally(() => setLoading(false));
+  };
+  const onRegisterOpen = () => setOpenRegister(true);
+  const onRegisterClose  = () => {
+    setOpenRegister(undefined);
+    setErrMsg(undefined);
+  };
 
     return (
-      <Grommet theme={theme} full>
+      <Grommet theme={formtheme} full>
       <ResponsiveContext.Consumer>
       {size => (
         <Box fill>
@@ -123,159 +212,181 @@ function Events() {
         </AppBar>
         <Box direction='row' flex overflow={{ horizontal: 'hidden' }}>
           <Box
-          width='small'
+          width='medium'
           background='#f0b1ad'
           elevation='small'
           align='center'
           justify='center'
           >
-          sidebar
-        </Box>
+      <Box fill background="light-2" align="center" justify="center">
+      <Text align="center" justify="center">
+        <strong>To see your saved events,<br/>
+        <Button
+          label={
+              <strong>&nbsp;Login&nbsp;</strong>
+          }
+          onClick={onLoginOpen}
+        />
+        <br /><br /> OR <br /><br />
+        <Button
+            label={
+                <strong>&nbsp;Create an Account&nbsp;</strong>
+            }
+            onClick={onRegisterOpen}
+          />
+          <br />to save your events today.</strong>
+      </Text>
+      </Box>
+      {openLogin && !openRegister && (
+        <Layer position="center" modal onClickOutside={onLoginClose} onEsc={onLoginClose}>
+          <Box pad="medium" gap="small" width="medium">
+            <Heading level={3} margin="none">
+              Login
+            </Heading>
+            <Text color="status-critical">{ errMsg }</Text>
+            <Text>email: <TextInput
+            placeholder="email@townsquare.com"
+            value={email}
+            onChange={event => setEmail(event.target.value)}
+            /></Text>
+            <Text>password:
+            <Box
+            width="medium"
+            direction="row"
+            round="small"
+            border
+            >
+            <TextInput
+            plain
+            type={revealPass ? "text" : "password"}
+            value={passValue}
+            onChange={event => passSetValue(event.target.value)}
+            />
+            <Button
+            icon={revealPass ? <View size="medium" /> : <Hide size="medium" />}
+            onClick={() => setRevealPass(!revealPass)}
+            />
+            </Box>
+            </Text>
+            <Box
+              as="footer"
+              gap="small"
+              direction="row"
+              align="center"
+              justify="end"
+              pad={{ top: "medium", bottom: "small" }}
+            >
+              <Button
+                label={
+                  <Text color="white">
+                    <strong>Login</strong>
+                  </Text>
+                }
+                disabled={loading}
+                onClick={sendLogin}
+                primary
+                color="status-critical"
+              />
+            </Box>
+          </Box>
+        </Layer>
+      )}
+      {openRegister && !openLogin && (
+        <Layer position="center" modal onClickOutside={onRegisterClose} onEsc={onRegisterClose}>
+          <Box pad="medium" gap="small" width="large">
+            <Heading level={3} margin="none">
+              Create an Account
+            </Heading>
+            <Text color="status-critical">{ errMsg }</Text>
+            <Form
+          onReset={event => console.log(event)}
+          onSubmit={({ value, touched }) =>
+            console.log("Submit", value, touched)
+          }
+        >
+          <Text>First name: <TextInput
+          placeholder=""
+          value={fname}
+          onChange={event => setFname(event.target.value)}
+          /></Text>
+          <Text>Last name: <TextInput
+          placeholder=""
+          value={lname}
+          onChange={event => setLname(event.target.value)}
+          /></Text>
+          <Text>Email: <TextInput
+          placeholder=""
+          value={email}
+          onChange={event => setEmail(event.target.value)}
+          /></Text>
+          <Text>Password:
+          <Box
+          width="medium"
+          direction="row"
+          round="small"
+          border
+          >
+          <TextInput
+          plain
+          type={revealPass ? "text" : "password"}
+          value={passValue}
+          onChange={event => passSetValue(event.target.value)}
+          />
+          <Button
+          icon={revealPass ? <View size="medium" /> : <Hide size="medium" />}
+          onClick={() => setRevealPass(!revealPass)}
+          />
+          </Box>
+          </Text>
+          <Text>Confirm password:
+          <Box
+          width="medium"
+          direction="row"
+          round="small"
+          border
+          >
+          <TextInput
+          plain
+          type={revealCPass ? "text" : "password"}
+          value={confirmPassValue}
+          onChange={event => confirmPassSetValue(event.target.value)}
+          />
+          <Button
+          icon={revealCPass ? <View size="medium" /> : <Hide size="medium" />}
+          onClick={() => setRevealCPass(!revealCPass)}
+          />
+          </Box>
+          </Text>
+        </Form>
+            <Box
+              as="footer"
+              gap="small"
+              direction="row"
+              align="center"
+              justify="end"
+              pad={{ top: "medium", bottom: "small" }}
+            >
+              <Button
+                label={
+                  <Text color="white">
+                    <strong>Register</strong>
+                  </Text>
+                }
+                disabled={loading}
+                onClick={sendRegister}
+                primary
+                color="status-critical"
+              />
+            </Box>
+          </Box>
+        </Layer>
+      )}
+      </Box>
         <Box fill align='center' justify='center'>
         <Box fill direction="row">
           <ThemeContext.Extend value={richAccordionTheme}>
-            <Accordion fill
-              multiple
-              onActive={activeIndexes => {
-                if (activeIndexes.includes(1)) {
-                  // give sometime to emulate an async call
-                  setTimeout(() => setHighlightLoaded(true), 1000);
-                }
-              }}
-            >
-              <RichPanel icon={<Gamepad />} label="Gaming Club Interest Meeting">
-                <Box
-                  pad={{
-                    bottom: "medium",
-                    horizontal: "xlarge",
-                    top: "small"
-                  }}
-                  gap="medium"
-                >
-                  <Box gap="xsmall">
-                    <Text color="dark-3">
-                      <strong>Purpose</strong>
-                    </Text>
-                    <Text>
-                      Used for general announcements like new releases,
-                      trainings...
-                    </Text>
-                  </Box>
-                  <Box gap="xsmall">
-                    <Text color="dark-3">
-                      <strong>Created</strong>
-                    </Text>
-                    <Text>Created by Bryan Jacquot on January 19, 2016</Text>
-                  </Box>
-                </Box>
-              </RichPanel>
-              <RichPanel icon={<Group />} label="LGBTQ+ Support Group">
-                <Box
-                  pad={{
-                    bottom: "medium",
-                    horizontal: "xlarge",
-                    top: "small"
-                  }}
-                  gap="medium"
-                >
-                  <Box gap="xsmall">
-                    <Text color="dark-3">
-                      <strong>Purpose</strong>
-                    </Text>
-                    <Text>
-                      Used for general announcements like new releases,
-                      trainings...
-                    </Text>
-                  </Box>
-                  <Box gap="xsmall">
-                    <Text color="dark-3">
-                      <strong>Created</strong>
-                    </Text>
-                    <Text>Created by Bryan Jacquot on January 19, 2016</Text>
-                  </Box>
-                </Box>
-              </RichPanel>
-              <RichPanel icon={<Html5 />} label="Learn HTML5 Workshop">
-                <Box
-                  pad={{
-                    bottom: "medium",
-                    horizontal: "xlarge",
-                    top: "small"
-                  }}
-                  gap="medium"
-                >
-                  <Box gap="xsmall">
-                    <Text color="dark-3">
-                      <strong>Purpose</strong>
-                    </Text>
-                    <Text>
-                      Used for general announcements like new releases,
-                      trainings...
-                    </Text>
-                  </Box>
-                  <Box gap="xsmall">
-                    <Text color="dark-3">
-                      <strong>Created</strong>
-                    </Text>
-                    <Text>Created by Bryan Jacquot on January 19, 2016</Text>
-                  </Box>
-                </Box>
-              </RichPanel>
-              <RichPanel icon={<Instagram />} label="Sets for the 'gram">
-                <Box
-                  pad={{
-                    bottom: "medium",
-                    horizontal: "xlarge",
-                    top: "small"
-                  }}
-                  gap="medium"
-                >
-                  <Box gap="xsmall">
-                    <Text color="dark-3">
-                      <strong>Purpose</strong>
-                    </Text>
-                    <Text>
-                      Used for general announcements like new releases,
-                      trainings...
-                    </Text>
-                  </Box>
-                  <Box gap="xsmall">
-                    <Text color="dark-3">
-                      <strong>Created</strong>
-                    </Text>
-                    <Text>Created by Bryan Jacquot on January 19, 2016</Text>
-                  </Box>
-                </Box>
-              </RichPanel>
-              <RichPanel icon={<Linkedin />} label="How to have a Successful LinkedIn">
-                <Box
-                  pad={{
-                    bottom: "medium",
-                    horizontal: "xlarge",
-                    top: "small"
-                  }}
-                  gap="medium"
-                >
-                  <Box gap="xsmall">
-                    <Text color="dark-3">
-                      <strong>Purpose</strong>
-                    </Text>
-                    <Text>
-                      Used for general announcements like new releases,
-                      trainings...
-                    </Text>
-                  </Box>
-                  <Box gap="xsmall">
-                    <Text color="dark-3">
-                      <strong>Created</strong>
-                    </Text>
-                    <Text>Created by Bryan Jacquot on January 19, 2016</Text>
-                  </Box>
-                </Box>
-              </RichPanel>
-            </Accordion>
+            <EventsList />
           </ThemeContext.Extend>
-
       </Box>
         </Box>
         </Box>

@@ -39,16 +39,21 @@ async function requireLogin(req, res, next) {
 
 // register user and store email in session if successful
 router.post('/register', async (req, res) => {
-  let email = req.body.email;
-  let username = req.body.username;
-  let password = req.body.password;
-  let confirmPassword = req.body.confirmPassword ;
-  if (!allExist(email, username, password, confirmPassword)) {
-    res.json({success:false, message:'Missing email, username, or password!'});
+  let { fname,
+    lname,
+    email,
+    password,
+    confirmPassword } = req.body;
+  if (!allExist(fname,
+    lname,
+    email,
+    password,
+    confirmPassword)) {
+    res.json({success:false, message:'Missing at least one field!'});
   } else if (password !== confirmPassword) {
     res.json({success:false, message:'Passwords do not match!'});
   } else {
-    let success = await registerUser(email, username, password);
+    let success = await registerUser(fname, lname, email, password);
     if (!success) {
       res.json({success:true, message:'Failed to register user!'});
     } else {
@@ -62,10 +67,10 @@ router.post('/register', async (req, res) => {
 router.post('/login', async (req, res) => {
   if (req.session.email) {
     res.json({success:true, message:'Already logged in!'});
-  } else if (!allExist(req.body.username, req.body.password)) {
-    res.json({success:false, message:'Missing username or password!'});
+  } else if (!allExist(req.body.email, req.body.password)) {
+    res.json({success:false, message:'Missing email or password!'});
   } else {
-    let user = await getUser(req.body.username, req.body.password);
+    let user = await getUser(req.body.email, req.body.password);
     if (user) {
       req.session.email = user.email;
       res.json({success:true, message:'Successfully authenticated user.'})

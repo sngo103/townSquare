@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Grommet, Box, Button, Heading, Collapsible, ResponsiveContext, Layer } from 'grommet';
+import { Grommet, Box, Clock, Calendar, Button, Heading, Collapsible, ResponsiveContext, Layer } from 'grommet';
 import { Notification, FormClose } from 'grommet-icons';
 //import Welcome from "./components/Welcome.js";
 //import Events from "./components/Events.js";
@@ -58,7 +58,18 @@ function Homepage() {
                 color="#B02E52"
                 label="What's Goin' On?"
                 onClick={() => setShowLayer(false)}
+              /><br />
+              <Box round="medium" pad="small" background="light-2">
+              <Clock hourLimit='12' type="digital" />
+              </Box>
+              <br />
+              <Box round="medium" pad="small" background="light-2">
+              <Calendar
+              size="small"
+              date={(new Date()).toISOString()}
+              onSelect={(date) => {}}
               />
+              </Box>
             </Box>
           </Layer>
         )}

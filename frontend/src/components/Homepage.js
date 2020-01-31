@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Grommet, Box, Clock, Calendar, Button, Heading, Collapsible, ResponsiveContext, Layer } from 'grommet';
+import { Grommet, Box, Clock, Calendar, Button, Heading, Text, Collapsible, ResponsiveContext, Layer } from 'grommet';
 import { Notification, FormClose } from 'grommet-icons';
 //import Welcome from "./components/Welcome.js";
 //import Events from "./components/Events.js";
@@ -52,11 +52,12 @@ function Homepage() {
               <Box pad="small" background={{ color: "brand" }} elevation="large">
                   town square
               </Box>
-              <br/><br/>
+              <br/><br/><Box background="light-3" pad="small"> <Text> *Hey everyone, Town Square is undergoing a renovation, so don't be alarmed if some things are falling apart and bear with us. Thanks!
+</Text></Box><br />
               <Button
                 primary
                 color="#B02E52"
-                label="What's Goin' On?"
+                label="What's Goin' On in Town?"
                 onClick={() => setShowLayer(false)}
               /><br />
               <Box round="medium" pad="small" background="light-2">

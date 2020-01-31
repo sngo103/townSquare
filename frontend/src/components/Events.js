@@ -1,10 +1,12 @@
 import React, { Component, useState } from 'react';
 import { grommet } from "grommet/themes";
 import { Grommet, Box, Button, Heading, Collapsible, ResponsiveContext, Form, Nav, FormField, Layer, Accordion, AccordionPanel, Text, ThemeContext, Select, TextInput } from 'grommet';
-import { Hide, View, Notification, FormClose, Bookmark, CircleInformation, FormSubtract, FormAdd, User, Home, Gamepad, Group, Html5, Linkedin, Instagram } from 'grommet-icons';
+import { Hide, View, Notification, FormClose, Bookmark, CircleInformation, FormSubtract, FormAdd, Grow, Favorite, Gremlin, Edit, User, Home, Gamepad, Group, Html5, Linkedin, Instagram } from 'grommet-icons';
 import EventsList from './EventsList.js'
 import SavedList from './SavedList.js'
 import CreateEvent from './CreateEvent.js'
+import MyEvents from './MyEvents.js'
+import MyProfile from './MyProfile.js'
 
 const AppBar = (props) => (
   <Box
@@ -118,10 +120,12 @@ const loading = (
 );
 
 function Events() {
-  const [userLoggedIn, setUserLoggedIn] = useState(true);
+  const [userLoggedIn, setUserLoggedIn] = useState(false);
   const [showMasterList, setShowMasterList] = useState(true);
   const [showSavedList, setShowSavedList] = useState(false);
   const [showCreateEvent, setShowCreateEvent] = useState(false);
+  const [showMyEvents, setShowMyEvents] = useState(false);
+  const [showProfile, setShowProfile] = useState(false);
   const [showSidebar, setShowSidebar] = useState(false);
   const [highlightLoaded, setHighlightLoaded] = React.useState(false);
   const [openLogin, setOpenLogin] = React.useState();
@@ -254,7 +258,28 @@ function Events() {
           justify='center'
         >
       <Box fill background="light-2" align="center" justify="center">
-      { userLoggedIn ? <Text> User Logged In! </Text> : <Text align="center" justify="center">
+      { userLoggedIn ? <Box align="center" justify="center"><Text><strong> Welcome back, user! </strong></Text><br /><br />
+        <Button
+          icon={<Group />}
+          label="Upcoming Events"
+          onClick={() => {setShowMasterList(true);setShowSavedList(false);setShowMyEvents(false);setShowProfile(false)}}
+        /><br />
+        <Button
+          icon={<Favorite />}
+          label="My Saved Events"
+          onClick={() => {setShowMasterList(false);setShowSavedList(true);setShowMyEvents(false);setShowProfile(false)}}
+        /><br />
+        <Button
+          icon={<Edit />}
+          label="Manage My Events"
+          onClick={() => {setShowMasterList(false);setShowSavedList(false);setShowMyEvents(true);setShowProfile(false)}}
+        /><br />
+        <Button
+          icon={<Gremlin />}
+          label="My Profile"
+          onClick={() => {setShowMasterList(false);setShowSavedList(false);setShowMyEvents(false);setShowProfile(true)}}
+        />
+        </Box> : <Text align="center" justify="center">
         <strong>To see your saved events,<br/>
         <Button
           label={
@@ -418,7 +443,11 @@ function Events() {
       </Box>
         <Box fill align='center' justify='center'>
         <Box fill direction="row">
-        {showCreateEvent ? <CreateEvent /> : (showSavedList ? <SavedList /> : <ThemeContext.Extend value={richAccordionTheme}> <EventsList /> </ThemeContext.Extend>) }
+        {showCreateEvent ? <CreateEvent /> :
+          (showSavedList ? <SavedList /> :
+            (showProfile ? <MyProfile /> :
+              (showMyEvents ? <MyEvents /> :
+                <ThemeContext.Extend value={richAccordionTheme}> <EventsList /> </ThemeContext.Extend>))) }
       </Box>
         </Box>
         </Box>

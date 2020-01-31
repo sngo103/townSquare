@@ -50,7 +50,7 @@ const RichPanel = ({ children, icon, label }) => {
   );
 };
 
-const SavedList = (props) => {
+const MyEvents = (props) => {
   const [highlightLoaded, setHighlightLoaded] = React.useState(false);
 
   return (
@@ -65,7 +65,7 @@ const SavedList = (props) => {
     <Box fill background="#DE4D1E" pad={{ bottom: "large", horizontal: "xlarge", top: "small" }} height="medium" gap="medium">
          <Box flex align="center" justify="center" pad="medium" color="dark-3" gap="medium">
            <Text color="light-3">
-             <strong>My Saved Events</strong>
+             <strong>My Events</strong>
            </Text>
          </Box>
        </Box>
@@ -103,4 +103,4 @@ const SavedList = (props) => {
   );
 }
 
-export default SavedList;
+export default MyEvents;

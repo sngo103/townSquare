@@ -106,8 +106,39 @@ function Events() {
   const [highlightLoaded, setHighlightLoaded] = React.useState(false);
   const [open, setOpen] = React.useState();
   const [value, setValue] = React.useState('');
+  const [loggingIn, setLoggingIn] = React.useState(false);
+  const [errMsg, setErrMsg] = React.useState(undefined);
   const onOpen = () => setOpen(true);
-  const onClose = () => setOpen(undefined);
+  const onClose = () => {
+    setOpen(undefined);
+    setErrMsg(undefined);
+  };
+  const sendLogin = () => {
+    setLoggingIn(true);
+    fetch('/api/login', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        username: value,
+        password: passValue
+      })
+    })
+      .then(res => res.json())
+      .then(data => {
+        if (data.success) {
+          onClose();
+        } else {
+          setErrMsg(data.message);
+        }
+      })
+      .catch(err => {
+        //console.log(`Failed to login: ${err}`);
+        setErrMsg('Failed to login.');
+      })
+      .finally(() => setLoggingIn(false));
+  };
   const [passValue, passSetValue] = React.useState("");
   const [reveal, setReveal] = React.useState(false);
 
@@ -154,8 +185,10 @@ function Events() {
             <Heading level={3} margin="none">
               Login
             </Heading>
+            <Text color="status-critical">{ errMsg }</Text>
             <Text>email: <TextInput
             placeholder="email@townsquare.com"
+            value={value}
             onChange={event => setValue(event.target.value)}
             /></Text>
             <Text>password:
@@ -191,7 +224,8 @@ function Events() {
                     <strong>Login</strong>
                   </Text>
                 }
-                onClick={onClose}
+                disabled={loggingIn}
+                onClick={sendLogin}
                 primary
                 color="status-critical"
               />

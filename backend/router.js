@@ -15,7 +15,7 @@ router.use(expressSession({resave: false,
 
 router.get('/', (req, res) => {
   console.log("Homepage")
-  res.json('Omni API');
+  res.json('Town Square API');
 });
 
 function allExist(...items) {

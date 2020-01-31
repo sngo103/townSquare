@@ -1,8 +1,10 @@
 import React, { Component, useState } from 'react';
 import { grommet } from "grommet/themes";
-import { Grommet, Box, Button, Heading, Collapsible, ResponsiveContext, Form, FormField, Layer, Accordion, AccordionPanel, Text, ThemeContext, Select, TextInput } from 'grommet';
+import { Grommet, Box, Button, Heading, Collapsible, ResponsiveContext, Form, Nav, FormField, Layer, Accordion, AccordionPanel, Text, ThemeContext, Select, TextInput } from 'grommet';
 import { Hide, View, Notification, FormClose, Bookmark, CircleInformation, FormSubtract, FormAdd, User, Home, Gamepad, Group, Html5, Linkedin, Instagram } from 'grommet-icons';
 import EventsList from './EventsList.js'
+import SavedList from './SavedList.js'
+import CreateEvent from './CreateEvent.js'
 
 const AppBar = (props) => (
   <Box
@@ -116,7 +118,10 @@ const loading = (
 );
 
 function Events() {
-  const [userLoggedIn, setUserLoggedIn] = useState(true)
+  const [userLoggedIn, setUserLoggedIn] = useState(true);
+  const [showMasterList, setShowMasterList] = useState(true);
+  const [showSavedList, setShowSavedList] = useState(false);
+  const [showCreateEvent, setShowCreateEvent] = useState(false);
   const [showSidebar, setShowSidebar] = useState(false);
   const [highlightLoaded, setHighlightLoaded] = React.useState(false);
   const [openLogin, setOpenLogin] = React.useState();
@@ -208,13 +213,26 @@ function Events() {
         <Button
         icon={<Home />}
         focusIndicator={false}
+        onClick={() => { setShowCreateEvent(false); setShowSavedList(false); setShowMasterList(true)}}
         />
         <Box width='medium' color="#454353" background="#eb4034" elevation='xlarge' align='center' justify='center'>
         <Heading level="3" size="small">
         town square
         </Heading>
         </Box>
-        {userLoggedIn ? <Button
+        {userLoggedIn ?
+          <div>
+          <Button
+          label={
+            <Text color="white">
+              <strong>Create Event</strong>
+            </Text>
+          }
+          disabled={loading}
+          onClick={() => setShowCreateEvent(true)}
+          color="status-critical"
+        />&nbsp;&nbsp;
+          <Button
           label={
             <Text color="white">
               <strong>Logout</strong>
@@ -224,16 +242,17 @@ function Events() {
           onClick={() => setUserLoggedIn(false)}
           primary
           color="status-critical"
-        /> : <div></div>}
+        />
+        </div> : <div></div>}
         </AppBar>
-        <Box direction='row' flex overflow={{ horizontal: 'hidden' }}>
-          <Box
+        <Box direction='row' flex >
+        <Box
           width='medium'
           background='#f0b1ad'
           elevation='small'
           align='center'
           justify='center'
-          >
+        >
       <Box fill background="light-2" align="center" justify="center">
       { userLoggedIn ? <Text> User Logged In! </Text> : <Text align="center" justify="center">
         <strong>To see your saved events,<br/>
@@ -250,9 +269,7 @@ function Events() {
             }
             onClick={onRegisterOpen}
           />
-          <br />to save your events today.</strong>
-      </Text>
-    }
+          <br />to save your events today.</strong></Text>}
       </Box>
       {openLogin && !openRegister && (
         <Layer position="center" modal onClickOutside={onLoginClose} onEsc={onLoginClose}>
@@ -401,9 +418,7 @@ function Events() {
       </Box>
         <Box fill align='center' justify='center'>
         <Box fill direction="row">
-          <ThemeContext.Extend value={richAccordionTheme}>
-            <EventsList />
-          </ThemeContext.Extend>
+        {showCreateEvent ? <CreateEvent /> : (showSavedList ? <SavedList /> : <ThemeContext.Extend value={richAccordionTheme}> <EventsList /> </ThemeContext.Extend>) }
       </Box>
         </Box>
         </Box>

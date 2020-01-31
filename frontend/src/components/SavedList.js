@@ -50,7 +50,7 @@ const RichPanel = ({ children, icon, label }) => {
   );
 };
 
-const EventsList = (props) => {
+const SavedList = (props) => {
   const [highlightLoaded, setHighlightLoaded] = React.useState(false);
 
   return (
@@ -61,13 +61,8 @@ const EventsList = (props) => {
         // give sometime to emulate an async call
         setTimeout(() => setHighlightLoaded(true), 1000);
       }
-    }}> <Box fill background="#DE4D1E" pad={{ bottom: "large", horizontal: "xlarge", top: "small" }} height="medium" gap="medium">
-          <Box flex align="center" justify="center" pad="medium" color="dark-3" gap="medium">
-            <Text color="light-3">
-              <strong>All Upcoming Events</strong>
-            </Text>
-          </Box>
-        </Box>
+    }}>
+    <Text> Saved Events </Text>
       <InfiniteScroll items={allItems} {...props}>
         {item => (
           <RichPanel icon={<Gamepad />} label="Gaming Club Interest Meeting">
@@ -102,4 +97,4 @@ const EventsList = (props) => {
   );
 }
 
-export default EventsList;
+export default SavedList;

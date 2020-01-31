@@ -50,7 +50,7 @@ const RichPanel = ({ children, icon, label }) => {
   );
 };
 
-const EventsList = (props) => {
+const CreateEvent = (props) => {
   const [highlightLoaded, setHighlightLoaded] = React.useState(false);
 
   return (
@@ -61,45 +61,10 @@ const EventsList = (props) => {
         // give sometime to emulate an async call
         setTimeout(() => setHighlightLoaded(true), 1000);
       }
-    }}> <Box fill background="#DE4D1E" pad={{ bottom: "large", horizontal: "xlarge", top: "small" }} height="medium" gap="medium">
-          <Box flex align="center" justify="center" pad="medium" color="dark-3" gap="medium">
-            <Text color="light-3">
-              <strong>All Upcoming Events</strong>
-            </Text>
-          </Box>
-        </Box>
-      <InfiniteScroll items={allItems} {...props}>
-        {item => (
-          <RichPanel icon={<Gamepad />} label="Gaming Club Interest Meeting">
-            <Box
-              pad={{
-                bottom: "medium",
-                horizontal: "xlarge",
-                top: "small"
-              }}
-              gap="medium"
-            >
-              <Box gap="xsmall">
-                <Text color="dark-3">
-                  <strong>Item # {item}</strong>
-                </Text>
-                <Text>
-                  Used for general announcements like new releases,
-                  trainings...
-                </Text>
-              </Box>
-              <Box gap="xsmall">
-                <Text color="dark-3">
-                  <strong>Created</strong>
-                </Text>
-                <Text>Created by Bryan Jacquot on January 19, 2016</Text>
-              </Box>
-            </Box>
-          </RichPanel>
-        )}
-      </InfiniteScroll>
+    }}>
+      
     </Accordion>
   );
 }
 
-export default EventsList;
+export default CreateEvent;
